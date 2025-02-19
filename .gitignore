@@ -22,3 +22,22 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Archivos de Maven
+target/
+mvnw
+mvnw.cmd
+
+# Configuración de IDEs
+.idea/
+.vscode/
+
+# Archivos de dependencias y caché
+*.log
+*.class
+*.jar
+*.war
+*.iml
+
+# Archivos de configuracion
+application.properties
