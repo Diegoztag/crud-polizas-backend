@@ -24,12 +24,13 @@ CREATE TABLE empleados (
 CREATE TABLE polizas (
     id_poliza SERIAL PRIMARY KEY,
     empleado_genero INT NOT NULL,
-    sku VARCHAR(50) NOT NULL,
+    inventario_sku VARCHAR(50) NOT NULL,
     cantidad INT NOT NULL CHECK (Cantidad > 0),
+	activo BOOLEAN DEFAULT TRUE,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (empleado_genero) REFERENCES empleados(id_empleado) ON DELETE CASCADE,
-    FOREIGN KEY (sku) REFERENCES inventario(sku) ON DELETE CASCADE
+    FOREIGN KEY (inventario_sku) REFERENCES inventario(sku) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_empleado_genero ON polizas(empleado_genero);

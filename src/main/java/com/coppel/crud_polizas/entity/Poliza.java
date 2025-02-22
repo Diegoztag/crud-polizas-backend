@@ -30,6 +30,9 @@ public class Poliza {
     @Column(nullable = false)
     private int cantidad;
 
+    @Column(nullable = false)
+    private boolean activo;
+
     @Column(name = "fecha", updatable = false)
     private LocalDateTime fecha;
 
