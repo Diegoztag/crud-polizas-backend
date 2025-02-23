@@ -2,6 +2,7 @@ package com.coppel.crud_polizas.domain.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Schema(name = "EmpleadoDTO", description = "DTO para la entidad Empleado")
 public class EmpleadoDTO {
+    private Long id;
 
     @Schema(description = "Nombre del empleado", example = "Diego")
     @NotBlank(message = "El nombre no puede estar vacío")

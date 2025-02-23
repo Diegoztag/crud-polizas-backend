@@ -2,10 +2,13 @@ package com.coppel.crud_polizas.domain.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,12 +25,17 @@ public class PolizaResponseDTO {
         private Long idPoliza;
         @Min(value = 1, message = "La cantidad debe ser mayor a 0")
         private int cantidad;
+
+        @NotNull(message = "La fecha es obligatoria")
+        private LocalDateTime fecha;
     }
 
     @Getter
     @Setter
     @AllArgsConstructor
     public static class EmpleadoPolizaResDTO {
+        @NotNull(message = "El ID del empleado es obligatorio")
+        private Long idEmpleado;
         @NotBlank(message = "El nombre no puede estar vacío")
         @Size(max = 100, message = "El nombre no puede tener más de 100 caracteres")
         private String nombre;

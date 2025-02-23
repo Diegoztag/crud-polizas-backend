@@ -1,11 +1,13 @@
 package com.coppel.crud_polizas.controller;
 
 import com.coppel.crud_polizas.domain.dto.ApiResponseDTO;
+import com.coppel.crud_polizas.domain.dto.PolizaDTO;
 import com.coppel.crud_polizas.domain.dto.PolizaResponseDTO;
 import com.coppel.crud_polizas.service.PolizaService;
 import com.coppel.crud_polizas.utils.ApiResponseBuilder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,14 +53,13 @@ public class PolizaController {
             summary = "Crear una nueva póliza",
             description = "Crea una nueva póliza vinculada a un empleado y un producto del inventario"
     )
-    public ResponseEntity<ApiResponseDTO<PolizaResponseDTO>> crearPoliza(
-            @RequestParam Long idEmpleado,
-            @RequestParam String sku,
-            @RequestParam @Min(value = 1, message = "La cantidad debe ser mayor a 0") int cantidad) {
-            polizaService.crearPoliza(idEmpleado, sku, cantidad);
-            return apiResponseBuilder.success(
-                    polizaService.crearPoliza(idEmpleado, sku, cantidad),
-                    "Póliza creada con éxito");
+    public ResponseEntity<ApiResponseDTO<PolizaResponseDTO>> crearPoliza(@Valid @RequestBody PolizaDTO polizaDTO) {
+        return apiResponseBuilder.success(
+                polizaService.crearPoliza(
+                        polizaDTO.getIdEmpleado(),
+                        polizaDTO.getSku(),
+                        polizaDTO.getCantidad()),
+                "Póliza creada con éxito");
     }
 
     @DeleteMapping("/{id}")

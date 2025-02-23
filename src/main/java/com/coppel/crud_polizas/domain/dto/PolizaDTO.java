@@ -14,6 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Schema(name = "PolizaDTO", description = "DTO para la entidad Poliza")
 public class PolizaDTO {
+
+    @Schema(description = "ID de la póliza", example = "1")
     private Long idPoliza;
 
     @Schema(description = "ID del empleado que genera la póliza", example = "1")

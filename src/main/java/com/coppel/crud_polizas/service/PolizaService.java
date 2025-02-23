@@ -35,8 +35,10 @@ public class PolizaService {
         return polizas.stream().map(poliza -> new PolizaResponseDTO(
                 new PolizaResponseDTO.PolizaResDTO(
                         poliza.getId(),
-                        poliza.getCantidad()),
+                        poliza.getCantidad(),
+                        poliza.getFecha()),
                 new PolizaResponseDTO.EmpleadoPolizaResDTO(
+                        poliza.getEmpleadoGenero().getId(),
                         poliza.getEmpleadoGenero().getNombre(),
                         poliza.getEmpleadoGenero().getApellido()),
                 new PolizaResponseDTO.InventarioPolizaResDTO(
@@ -52,8 +54,10 @@ public class PolizaService {
         return new PolizaResponseDTO(
                 new PolizaResponseDTO.PolizaResDTO(
                         poliza.getId(),
-                        poliza.getCantidad()),
+                        poliza.getCantidad(),
+                        poliza.getFecha()),
                 new PolizaResponseDTO.EmpleadoPolizaResDTO(
+                        poliza.getEmpleadoGenero().getId(),
                         poliza.getEmpleadoGenero().getNombre(),
                         poliza.getEmpleadoGenero().getApellido()),
                 new PolizaResponseDTO.InventarioPolizaResDTO(
@@ -92,8 +96,10 @@ public class PolizaService {
         return new PolizaResponseDTO(
                 new PolizaResponseDTO.PolizaResDTO(
                         poliza.getId(),
-                        poliza.getCantidad()),
+                        poliza.getCantidad(),
+                        poliza.getFecha()),
                 new PolizaResponseDTO.EmpleadoPolizaResDTO(
+                        poliza.getEmpleadoGenero().getId(),
                         empleado.getNombre(),
                         empleado.getApellido()),
                 new PolizaResponseDTO.InventarioPolizaResDTO(
