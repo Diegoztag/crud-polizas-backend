@@ -1,6 +1,6 @@
 package com.coppel.crud_polizas.exceptions;
 
-import com.coppel.crud_polizas.dto.ApiResponseDTO;
+import com.coppel.crud_polizas.domain.dto.ApiResponseDTO;
 import com.coppel.crud_polizas.utils.ApiResponseBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiResponseDTO<Void>> handleIllegalStateException(IllegalStateException ex, HttpServletRequest request) {
-        logger.error("Estado ilegal en {}: {}", request.getRequestURI(), ex.getMessage());
+        logger.error("Estado ilegal en {}: {}", request.getRequestURI(), List.of(ex.getMessage()));
         return apiResponseBuilder.error(
                 ex.getMessage(),
                 List.of(ex.getMessage())
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ApiResponseDTO<Void>> handleDuplicateResource(DuplicateResourceException ex, HttpServletRequest request) {
-        logger.error("Recurso duplicado en {}: {}", request.getRequestURI(), ex.getMessage());
+        logger.error("Recurso duplicado en {}: {}", request.getRequestURI(), List.of(ex.getMessage()));
         return apiResponseBuilder.duplicate(
                 ex.getMessage(),
                 List.of(ex.getMessage())

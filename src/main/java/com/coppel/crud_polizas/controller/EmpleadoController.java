@@ -1,6 +1,6 @@
 package com.coppel.crud_polizas.controller;
 
-import com.coppel.crud_polizas.entity.Empleado;
+import com.coppel.crud_polizas.domain.entity.Empleado;
 import com.coppel.crud_polizas.service.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

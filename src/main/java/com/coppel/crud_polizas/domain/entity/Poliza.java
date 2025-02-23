@@ -1,8 +1,6 @@
-package com.coppel.crud_polizas.entity;
+package com.coppel.crud_polizas.domain.entity;
 
 import jakarta.persistence.*;
-
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,24 +16,21 @@ public class Poliza {
     @Column(name = "id_poliza")
     private Long id;
 
-    @NotNull(message = "El empleado es obligatorio")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "empleado_genero", nullable = false)
     private Empleado empleadoGenero;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inventario_sku",nullable = false)
     private Inventario inventario;
 
-    @Column(nullable = false)
     private int cantidad;
 
-    @Column(nullable = false)
     private boolean activo;
 
     @Column(name = "fecha", updatable = false)
     private LocalDateTime fecha;
 
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

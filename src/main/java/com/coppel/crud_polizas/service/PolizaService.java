@@ -1,12 +1,9 @@
 package com.coppel.crud_polizas.service;
 
-import com.coppel.crud_polizas.dto.EmpleadoDTO;
-import com.coppel.crud_polizas.dto.InventarioDTO;
-import com.coppel.crud_polizas.dto.Poliza.PolizaResponseDTO;
-import com.coppel.crud_polizas.dto.Poliza.PolizaDTO;
-import com.coppel.crud_polizas.entity.Empleado;
-import com.coppel.crud_polizas.entity.Inventario;
-import com.coppel.crud_polizas.entity.Poliza;
+import com.coppel.crud_polizas.domain.dto.PolizaResponseDTO;
+import com.coppel.crud_polizas.domain.entity.Empleado;
+import com.coppel.crud_polizas.domain.entity.Inventario;
+import com.coppel.crud_polizas.domain.entity.Poliza;
 import com.coppel.crud_polizas.repository.EmpleadoRepository;
 import com.coppel.crud_polizas.repository.InventarioRepository;
 import com.coppel.crud_polizas.repository.PolizaRepository;
@@ -36,9 +33,15 @@ public class PolizaService {
         List<Poliza> polizas = polizaRepository.findByActivoTrue();
 
         return polizas.stream().map(poliza -> new PolizaResponseDTO(
-                new PolizaDTO(poliza.getId(), poliza.getCantidad()),
-                new EmpleadoDTO(poliza.getEmpleadoGenero().getNombre(), poliza.getEmpleadoGenero().getApellido()),
-                new InventarioDTO(poliza.getInventario().getSku(), poliza.getInventario().getNombre())
+                new PolizaResponseDTO.PolizaResDTO(
+                        poliza.getId(),
+                        poliza.getCantidad()),
+                new PolizaResponseDTO.EmpleadoPolizaResDTO(
+                        poliza.getEmpleadoGenero().getNombre(),
+                        poliza.getEmpleadoGenero().getApellido()),
+                new PolizaResponseDTO.InventarioPolizaResDTO(
+                        poliza.getInventario().getSku(),
+                        poliza.getInventario().getNombre())
         )).toList();
     }
 
@@ -47,9 +50,15 @@ public class PolizaService {
                 orElseThrow(() -> new ResourceNotFoundException("Póliza no encontrada con ID: " + id));
 
         return new PolizaResponseDTO(
-                new PolizaDTO(poliza.getId(), poliza.getCantidad()),
-                new EmpleadoDTO(poliza.getEmpleadoGenero().getNombre(), poliza.getEmpleadoGenero().getApellido()),
-                new InventarioDTO(poliza.getInventario().getSku(), poliza.getInventario().getNombre()));
+                new PolizaResponseDTO.PolizaResDTO(
+                        poliza.getId(),
+                        poliza.getCantidad()),
+                new PolizaResponseDTO.EmpleadoPolizaResDTO(
+                        poliza.getEmpleadoGenero().getNombre(),
+                        poliza.getEmpleadoGenero().getApellido()),
+                new PolizaResponseDTO.InventarioPolizaResDTO(
+                        poliza.getInventario().getSku(),
+                        poliza.getInventario().getNombre()));
     }
 
     @Transactional
@@ -78,12 +87,18 @@ public class PolizaService {
         poliza.setCreatedAt(LocalDateTime.now());
 
         polizaRepository.save(poliza);
-        logger.info("Póliza creada con éxito ID: {}", poliza.getId());
+        logger.info("Póliza creada con éxito: {}", poliza);
 
         return new PolizaResponseDTO(
-                new PolizaDTO(poliza.getId(), poliza.getCantidad()),
-                new EmpleadoDTO(empleado.getNombre(), empleado.getApellido()),
-                new InventarioDTO(inventario.getSku(), inventario.getNombre())
+                new PolizaResponseDTO.PolizaResDTO(
+                        poliza.getId(),
+                        poliza.getCantidad()),
+                new PolizaResponseDTO.EmpleadoPolizaResDTO(
+                        empleado.getNombre(),
+                        empleado.getApellido()),
+                new PolizaResponseDTO.InventarioPolizaResDTO(
+                        inventario.getSku(),
+                        inventario.getNombre())
         );
     }
 
@@ -94,11 +109,11 @@ public class PolizaService {
 
         poliza.setActivo(false);
         polizaRepository.save(poliza);
-        logger.info("Póliza con ID {} ha sido eliminada lógicamente.", idPoliza);
+        logger.info("Póliza con ID: {} ha sido eliminada lógicamente. {}", idPoliza, poliza);
     }
 
     @Transactional
-    public PolizaDTO actualizarEmpleadoEnPoliza(Long idPoliza, Long idEmpleado) {
+    public void actualizarEmpleadoEnPoliza(Long idPoliza, Long idEmpleado) {
 
         Poliza poliza = polizaRepository.findById(idPoliza)
                 .orElseThrow(() -> new ResourceNotFoundException("Póliza no encontrada"));
@@ -108,8 +123,6 @@ public class PolizaService {
 
         poliza.setEmpleadoGenero(empleado);
         polizaRepository.save(poliza);
-        logger.info("Póliza con id: {} actualizada con éxito", idPoliza);
-
-        return new PolizaDTO(poliza.getId(), poliza.getCantidad());
+        logger.info("Póliza con ID: {} actualizada con éxito: {}", idPoliza, poliza);
     }
 }

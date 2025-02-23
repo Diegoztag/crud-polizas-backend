@@ -1,6 +1,6 @@
 package com.coppel.crud_polizas.utils;
 
-import com.coppel.crud_polizas.dto.ApiResponseDTO;
+import com.coppel.crud_polizas.domain.dto.ApiResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

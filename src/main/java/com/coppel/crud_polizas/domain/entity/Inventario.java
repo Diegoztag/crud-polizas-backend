@@ -1,4 +1,4 @@
-package com.coppel.crud_polizas.entity;
+package com.coppel.crud_polizas.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,14 +17,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Inventario {
     @Id
-    @Column(nullable = false, length = 50)
     private String sku;
 
-    @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false)
     private int cantidad;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 }
