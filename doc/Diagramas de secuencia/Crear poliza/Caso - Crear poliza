@@ -1,0 +1,74 @@
+@startuml Creación de Nueva Póliza
+
+actor Usuario
+boundary PolizasList
+boundary PolizaForm
+control APIService
+control SpringBoot
+database Database
+
+' Inicio de Creación
+Usuario -> PolizasList: Click "Nueva Póliza"
+activate PolizaForm
+
+' Carga Inicial de Datos
+PolizaForm -> APIService: GET /api/empleados
+APIService -> SpringBoot: Obtener empleados activos
+SpringBoot -> Database: SELECT empleados activos
+Database --> SpringBoot: Lista empleados
+SpringBoot --> APIService: JSON response
+APIService --> PolizaForm: Datos empleados
+
+PolizaForm -> APIService: GET /api/inventario
+APIService -> SpringBoot: Obtener inventario disponible
+SpringBoot -> Database: SELECT inventario
+Database --> SpringBoot: Lista inventario
+SpringBoot --> APIService: JSON response
+APIService --> PolizaForm: Datos inventario
+
+PolizaForm --> Usuario: Muestra formulario
+
+' Proceso de Validación Frontend
+Usuario -> PolizaForm: Ingresa datos póliza
+PolizaForm -> PolizaForm: Validar campos requeridos
+note right: - SKU de póliza\n- Empleado seleccionado\n- Cantidad de artículos
+
+PolizaForm -> PolizaForm: Validar formatos
+note right: - Números positivos
+
+PolizaForm -> PolizaForm: Validar reglas negocio
+note right: - Stock disponible
+
+alt Validación Fallida
+    PolizaForm --> Usuario: Muestra errores en tiempo real
+    PolizaForm --> Usuario: Deshabilita botón Guardar
+else Validación Exitosa
+    PolizaForm --> Usuario: Habilita botón Guardar
+    Usuario -> PolizaForm: Click Guardar
+    PolizaForm -> APIService: POST /api/polizas
+    APIService -> SpringBoot: Crear póliza
+    SpringBoot -> Database: INSERT póliza
+
+    alt Creación Exitosa
+        Database --> SpringBoot: Confirma creación
+        SpringBoot --> APIService: Success response
+        APIService --> PolizaForm: Confirmación
+        PolizaForm -> PolizasList: Navegar a lista
+        PolizasList --> Usuario: Muestra lista actualizada
+    else Error en Creación
+        Database --> SpringBoot: Error
+        SpringBoot --> APIService: Error 500
+        APIService --> PolizaForm: Error response
+        PolizaForm --> Usuario: Muestra error
+    end
+end
+
+' Cancelación
+alt Cancelar Creación
+    Usuario -> PolizaForm: Click Cancelar
+    PolizaForm -> PolizasList: Navegar a lista
+    deactivate PolizaForm
+    PolizasList --> Usuario: Muestra lista
+end
+
+@enduml

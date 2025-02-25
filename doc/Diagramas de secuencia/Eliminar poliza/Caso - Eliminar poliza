@@ -1,0 +1,50 @@
+@startuml Eliminación Lógica de Póliza
+
+actor Usuario
+boundary PolizasList
+boundary ConfirmDialog
+control APIService
+control SpringBoot
+database Database
+
+' Flujo Principal
+Usuario -> PolizasList: Click Eliminar Póliza
+activate PolizasList
+
+PolizasList -> ConfirmDialog: Mostrar diálogo confirmación
+activate ConfirmDialog
+ConfirmDialog --> Usuario: Solicitar confirmación
+
+alt Confirmar Eliminación
+    Usuario -> ConfirmDialog: Confirma eliminación
+    ConfirmDialog -> APIService: DELETE /api/polizas/{id}
+    APIService -> SpringBoot: Solicitar eliminación lógica
+    SpringBoot -> Database: UPDATE polizas SET activo = false WHERE id = {id}
+
+    alt Eliminación Exitosa
+        Database --> SpringBoot: Confirma actualización
+        SpringBoot --> APIService: Success response (200)
+        APIService --> PolizasList: Confirmación
+        PolizasList -> APIService: GET /api/polizas
+        APIService -> SpringBoot: Solicitar lista activas
+        SpringBoot -> Database: SELECT * FROM polizas WHERE activo = true
+        Database --> SpringBoot: Retorna datos
+        SpringBoot --> APIService: JSON response
+        APIService --> PolizasList: Lista actualizada
+        PolizasList --> Usuario: Muestra lista y notificación
+    else Error
+        Database --> SpringBoot: Error de actualización
+        SpringBoot --> APIService: Error 500
+        APIService --> PolizasList: Error response
+        PolizasList --> Usuario: Muestra error
+    end
+
+else Cancelar
+    Usuario -> ConfirmDialog: Cancela
+    ConfirmDialog --> Usuario: Cierra diálogo
+end
+
+deactivate ConfirmDialog
+deactivate PolizasList
+
+@enduml

@@ -1,0 +1,47 @@
+@startuml Sistema de Búsqueda y Filtrado (Frontend)
+
+actor Usuario
+boundary PolizasList
+control SearchBar
+control FilterPanel
+control APIService
+control SpringBoot
+database Database
+
+' Carga inicial
+Usuario -> PolizasList: Accede a lista
+activate PolizasList
+
+PolizasList -> APIService: GET /api/polizas
+APIService -> SpringBoot: Obtener pólizas activas
+SpringBoot -> Database: SELECT * FROM polizas WHERE activo = true
+Database --> SpringBoot: Datos pólizas
+SpringBoot --> APIService: JSON response
+APIService --> PolizasList: Array de pólizas
+
+' Búsqueda local
+Usuario -> SearchBar: Ingresa término
+SearchBar -> PolizasList: filtrarPolizas()
+note right
+    Filtra por:
+    - ID Póliza
+    - SKU
+    - Nombre producto
+    - Nombre empleado
+    - Apellido empleado
+end note
+
+' Ordenamiento local
+Usuario -> FilterPanel: Selecciona ordenamiento
+FilterPanel -> PolizasList: ordenarPolizas()
+note right
+    Ordena por:
+    - Fecha (asc/desc)
+    - SKU (asc/desc)
+end note
+
+PolizasList --> Usuario: Muestra resultados filtrados
+
+deactivate PolizasList
+
+@enduml

@@ -38,6 +38,7 @@ CREATE INDEX idx_sku ON polizas(sku);
 CREATE INDEX idx_inventario_created_at ON inventario(created_at);
 CREATE INDEX idx_empleado_created_at ON empleados(created_at);
 CREATE INDEX idx_polizas_created_at ON polizas(created_at);
+CREATE INDEX idx_poliza_estado ON polizas(activo);
 
 
 

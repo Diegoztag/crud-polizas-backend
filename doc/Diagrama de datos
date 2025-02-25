@@ -1,0 +1,46 @@
+@startuml Diagrama de Datos - Sistema de Pólizas
+!pragma layout smetana
+        
+!theme plain
+        skinparam backgroundColor white
+        skinparam linetype polyline
+        skinparam padding 15
+        skinparam nodesep 100
+        skinparam ranksep 100
+
+        ' Entidad externa (rectángulo simple)
+        rectangle "Usuario del\nSistema" as user #LightGreen
+
+        ' Almacenes de datos (dos líneas horizontales)
+        rectangle "===================\nInventario\n===================" as inv #LightYellow
+        rectangle "===================\nBase de Datos Pólizas\n===================" as db #LightYellow
+
+        ' Procesos (círculos)
+        circle "1.0\n\nGestionar\nListado de\nPólizas" as list #LightYellow
+        circle "2.0\n\nProcesar\nRegistro de\nPóliza" as create #LightYellow
+        circle "3.0\n\nActualizar\nDatos de\nPóliza" as edit #LightYellow
+        circle "4.0\n\nProcesar\nEliminación de\nPóliza" as delete #LightYellow
+
+        ' Flujos de datos (flechas con descripción)
+        user -[#black]right-> list : ""
+        
+        list -[#black]right-> db : "Consulta registros"
+        db -[#black]-> list : "Retorna datos"
+        list -[#black]left-> user : "Muestra pólizas"
+
+        user -[#black]-> create : "Ingresa datos"
+        create -[#black]up-> inv : "Verifica existencia"
+        inv -[#black]-> create : "Confirma stock"
+        create -[#black]-> db : "Almacena póliza"
+
+        user -[#black]-> edit : "Modifica datos"
+        edit -[#black]-> db : "Actualiza registro"
+        db -[#black]-> edit : "Confirma cambios"
+        edit -[#black]-> user : "Muestra resultado"
+
+        user -[#black]-> delete : "Selecciona póliza"
+        delete -[#black]-> db : "Elimina registro"
+        db -[#black]-> delete : "Confirma eliminación"
+        delete -[#black]-> user : "Notifica resultado"
+
+@enduml

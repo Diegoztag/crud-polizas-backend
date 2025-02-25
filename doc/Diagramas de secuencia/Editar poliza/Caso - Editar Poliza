@@ -1,0 +1,95 @@
+@startuml Edición de Póliza - Carga Inicial
+
+actor Usuario
+boundary PolizasList
+boundary PolizaEditForm
+control APIService
+control SpringBoot
+database Database
+
+' Inicio de Edición
+Usuario -> PolizasList: Click "Editar Póliza"
+activate PolizaEditForm
+
+' Carga Inicial Paralela
+PolizaEditForm -> APIService: GET /api/polizas/{id}
+APIService -> SpringBoot: Obtener póliza
+SpringBoot -> Database: SELECT póliza
+Database --> SpringBoot: Datos póliza
+SpringBoot --> APIService: JSON póliza
+APIService --> PolizaEditForm: Datos póliza
+
+par Carga de Datos Relacionados
+    PolizaEditForm -> APIService: GET /api/empleados
+    APIService -> SpringBoot: Obtener lista empleados
+    SpringBoot -> Database: SELECT empleados activos
+    Database --> SpringBoot: Lista empleados
+    SpringBoot --> APIService: JSON empleados
+    APIService --> PolizaEditForm: Lista empleados
+also
+    PolizaEditForm -> APIService: GET /api/empleados/{idEmpleado}
+    APIService -> SpringBoot: Obtener empleado actual
+    SpringBoot -> Database: SELECT empleado
+    Database --> SpringBoot: Datos empleado
+    SpringBoot --> APIService: JSON empleado
+    APIService --> PolizaEditForm: Empleado actual
+also
+    PolizaEditForm -> APIService: GET /api/inventario/{sku}
+    APIService -> SpringBoot: Obtener producto
+    SpringBoot -> Database: SELECT producto
+    Database --> SpringBoot: Datos producto
+    SpringBoot --> APIService: JSON producto
+    APIService --> PolizaEditForm: Datos producto
+end
+
+PolizaEditForm -> PolizaEditForm: Llenar formulario
+PolizaEditForm --> Usuario: Mostrar datos
+
+' Validaciones y Cambios
+Usuario -> PolizaEditForm: Selecciona nuevo empleado
+PolizaEditForm -> PolizaEditForm: Validar cambios
+note right: Compara empleadoInicial\ncon empleadoSeleccionado
+
+alt No Hay Cambios
+    PolizaEditForm --> Usuario: Botón Editar deshabilitado
+else Hay Cambios
+    PolizaEditForm --> Usuario: Botón Editar habilitado
+end
+
+' Proceso de Actualización
+Usuario -> PolizaEditForm: Click "Editar"
+activate PolizaEditForm
+
+PolizaEditForm -> PolizaEditForm: Validar empleado requerido
+alt Validación Exitosa
+    PolizaEditForm -> APIService: PUT /api/polizas/{id}/empleado
+    note right: Envía nuevo idEmpleado
+    APIService -> SpringBoot: Actualizar empleado
+    SpringBoot -> Database: UPDATE poliza_empleado
+
+    alt Actualización Exitosa
+        Database --> SpringBoot: Confirma actualización
+        SpringBoot --> APIService: Success 200
+        APIService --> PolizaEditForm: Confirmación
+        PolizaEditForm --> Usuario: Snackbar éxito
+        PolizaEditForm -> PolizasList: Navegar después de 2s
+        PolizasList --> Usuario: Muestra lista
+    else Error
+        Database --> SpringBoot: Error
+        SpringBoot --> APIService: Error 500
+        APIService --> PolizaEditForm: Error response
+        PolizaEditForm --> Usuario: Snackbar error
+    end
+else Validación Fallida
+    PolizaEditForm --> Usuario: Muestra error requerido
+end
+
+' Cancelación
+alt Cancelar Edición
+    Usuario -> PolizaEditForm: Click "Cancelar"
+    PolizaEditForm -> PolizasList: Navegar a lista
+    deactivate PolizaEditForm
+    PolizasList --> Usuario: Muestra lista
+end
+
+@enduml
